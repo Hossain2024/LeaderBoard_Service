@@ -1,3 +1,4 @@
+from sqlalchemy import func, select
 from sqlalchemy.orm import Session
 
 from app.models.score import Score
@@ -24,3 +25,18 @@ def update_score(db: Session, record: Score, score: float) -> Score:
     db.commit()
     db.refresh(record)
     return record
+
+
+def get_top_scores(db: Session, game_id: str, limit: int):
+    ranked = (
+        select(
+            Score.user_id,
+            Score.score,
+            Score.updated_at,
+            func.rank().over(order_by=Score.score.desc()).label("rank"),
+        )
+        .where(Score.game_id == game_id)
+        .subquery()
+    )
+    stmt = select(ranked).order_by(ranked.c.rank).limit(limit)
+    return db.execute(stmt).all()
