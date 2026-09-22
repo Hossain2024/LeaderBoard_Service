@@ -15,3 +15,12 @@ class LeaderboardEntry(BaseModel):
 class TopScoresResponse(BaseModel):
     game_id: str
     entries: list[LeaderboardEntry]
+
+
+class UserContextResponse(BaseModel):
+    game_id: str
+    user_id: str
+    rank: int | None
+    score: float | None
+    above: list[LeaderboardEntry]
+    below: list[LeaderboardEntry]
