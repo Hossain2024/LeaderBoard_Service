@@ -12,4 +12,4 @@ app.include_router(leaderboard.router)
 
 @app.get("/health")
 def health():
-    return {"status": "ok"}
+    return {"status": "ok", "database": engine.dialect.name}
